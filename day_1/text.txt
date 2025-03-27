@@ -1,0 +1,25 @@
+hello world this is dhiraj logged in at Tue Mar 11 2025
+hello world this is dhiraj logged in at Tue Mar 11 2025 
+hello world this is dhiraj logged in at Tue Mar 11 2025 
+
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Allow only authenticated users to access their own data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Allow only authenticated users to read/write quizzes
+    match /Quizzes/{subject} {
+      allow read, write: if request.auth != null;
+      
+      // Allow authenticated users to access questions inside each subject
+      match /Questions/{questionId} {
+        allow read, write: if request.auth != null;
+      }
+    }
+  }
+}
