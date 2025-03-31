@@ -33,7 +33,7 @@ app.get("/api/v1/users/:id", (req, res) => {
 });
 
 
-//! 2. POST request
+//! 2. POST request (sending data to the server)
 
 app.post("/api/v1/users",(req,res)=>{
     const{name, displayname}=req.body;
@@ -49,6 +49,41 @@ app.post("/api/v1/users",(req,res)=>{
     })
 })
 
+//! 3. PUT request (update all fields)
+app.put("/api/v1/users/:id",(req,res)=>{
+   const{body,params:{id}} = req;
+   const parsedID = parseInt(id);
+   const userIndex = data.findIndex((user)=>user.id === parsedID);
+   if(userIndex === -1){
+    res.status(404).send("user not found")
+   }
+   data[userIndex]={
+    id:parsedID,
+     ...body
+   }
+       res.status(201).send({
+        message:"user updated",
+        data:data[userIndex]
+       })
+})
+//! 4. PATCH request (update specific fields)
+app.patch("/api/v1/users/:id",(req,res)=>{
+    const{body,params:{id}} = req;
+    const parsedID = parseInt(id);
+    const userIndex = data.findIndex((user)=>user.id === parsedID);
+    if(userIndex === -1){
+     res.status(404).send("user not found")
+    }
+    data[userIndex]={
+        ...data[userIndex],
+     ...body,
+     
+    }
+        res.status(201).send({
+         message:"user updated",
+         data:data[userIndex]
+        })
+ })
 
 app.listen(PORT,(req,res)=>{
     console.log(`server is running on ${PORT}`)
